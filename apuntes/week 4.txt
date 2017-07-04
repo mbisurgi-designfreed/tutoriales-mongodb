@@ -1,0 +1,30 @@
+MONGO DB 101 with NodeJS
+
+WEEK 4 - Schema Design
+
+* MongoDB features
+    - Rich documents
+    - Pre joins / Embed data
+    - No Mongo joins
+    - No constraints
+    - Atomic operations
+    - No declared schema
+
+* Relations in MongoDB
+    - One to One
+        + Two separate collections
+        + Embed one document inside of the other one
+    - One to Many
+        + Embed one document inside of the other one
+        + True Linking => Best approach
+            - Two separate collections 
+            - The collection that represents the many side of the relation will have a key to the collection that represents the one side of the relation
+    - One to Few
+        + Embed one document inside of the other one
+    - Many to Many
+        + Two separate collections
+            - En each or one of the collections have an array of ids matching the ids on the other collection
+            - Multikey Indexes
+                + db.collection(collectionname).ensureIndex({ field: 1 })
+    - Trees
+        

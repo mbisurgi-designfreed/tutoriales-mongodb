@@ -1,0 +1,50 @@
+MONGO DB 101 with NodeJS
+
+WEEK 5 - Indexes and Performance
+
+* Storage Engines
+    It sits between the MongoDB Server and the physical storage (disks)
+        - Pluggable Storage Engines => Different storage engines may be used and they will have impact on performance
+            + MMAPv1 
+                - Collection Level Locking
+                - Inplace Updates
+                - Power of Two Sized
+            + WiredTiger
+                - Document Level Concurrency
+                - Compression
+                    + Data
+                    + Indexes
+                - No Inplace Updates
+
+* Indexes
+    They increase the performance of queries by storing in order the values of the field that we use as an index. Reads are faster and writes are slower
+        - Create => db.[collectionname]
+            + .createIndex({ field1: order, field2: order })
+                - Order 
+                    +  1 = Ascending
+                    + -1 = Descending
+        - Discover => db.[collectionname]
+            + .getIndexes()
+        - Delete => db.[collectionname]
+            + .dropIndex({ field: order })
+        - Simple Indexes => Indexes based on a single field
+        - Compound Indexes => Indexes based on two or more fields
+        - Multikey Indexes => It is the process of creating indexes on arrays. If used on a compound index, there can not be more than one array field
+            + . Notation 
+                - .createIndex({ 'array.field': order })
+        - Unique Indexes => It allows that no other field has the same value 
+            + .createIndex({ field: order }, { unique: true })
+        - Sparse Indexes => It can be used when de index key is missing in the document, as it does not include in the index documentos that do not have a key
+            + .createIndex({ field: order }, { unique: true, sparse: true })
+        - Places for creating indexes
+            + Foreground
+                - Fast
+                - Blocks readers and writers
+            + Background
+                - Slow
+                - Dont blocks readers and writers
+                - .createIndex({ field: order }, { background: true })
+
+* Explain
+    It is used to find out what the database is doing with a query, how is it using it, indexes being used, documens being read
+        - db.[collectionname].explain().[method]
