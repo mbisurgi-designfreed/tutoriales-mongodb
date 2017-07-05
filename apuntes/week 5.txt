@@ -48,3 +48,72 @@ WEEK 5 - Indexes and Performance
 * Explain
     It is used to find out what the database is doing with a query, how is it using it, indexes being used, documens being read
         - db.[collectionname].explain().[method]
+        - Explain Modes
+            + Query Planner Mode => db.[collectionname].explain().[method]
+            + Execution Stats Mode => db.[collectionname].explain({"executionStats"}).[method]
+            + All Plans Execution Mode => db.[collectionname].explain({"allPlansExecution"}).[method]
+
+* Covered Queries
+    It is a query, where the query itself can be satisfied entirely using an index so 0 documents are inspected to get the result back
+
+* Geospatial Indexes
+    Allows to find things based on location
+        - 2D 
+            + Document needs to have some sort of location information => 'location': [x, y]
+            + .ensureIndex({ location: '2d' })
+            + .find({ location: { $near: [x, y] } })
+
+* Geospatial Spherical Indexes
+    Allows to find documents based on latitude and longitude
+        - 2D Sphere
+            + .ensureIndex({ location: '2dsphere' })
+            + .find({ location: { $near: { $geometry: { type: 'Point', coordinates: [lng, lat] }, $maxDistance: meters } } })
+            + GeoJSON => Used in MongoDB for setting locations on documents
+                - { type: 'Point', coordinates: [lng, lat] }
+
+* Text Indexes
+    Allows to query on text fields on a document
+        + .ensureIndex({ field: 'text' })
+        + .find({ { $text: { $search: value } } })
+        + .find({ { $text: { $search: value } }, { $score: { $meta: textScore } } }).sort( { $score: { $meta: textScore } }) => Order the result got back by most 
+          accurate search result
+
+* Efficiency Indexes
+    - Compound Indexes
+        + Equality Field
+        + Sort Field
+        + Range Field
+
+* Logging and Profiling
+    Is it possible to log the performance of MongoDB
+        - Log Slow Queries => By default MongoDB will log queries that took more than 100ms to complete
+        - Profiler => It will write entries to system.profile and store all the queries that took more than a specified time
+            + db.system.profile
+                - mongodb --profile [level] --slowms [miliseconds]
+                    + Level
+                        - 0 => Turned off
+                        - 1 => Log slow queries  
+                        - 2 => Log all queries, used for debugging
+                - .find()
+                - .find({ ns: value }).sort({ ts: order })
+                - .find({ millis: value })
+
+* Mongotop
+    It gives an overview of what MongoDB has been doing and in which collections and databases has been using its time
+        - mongotop [seconds]
+
+* Mongostat
+    Performance tuning command
+
+* Sharding
+    Technique for splitting up a large collection among different servers (Shards).
+        - Mongo S => It is a router when having multiple MongoDB servers running, and the application talks to this router
+            + Shard 1
+            + Shard 2
+            + Shard N
+        - Replica Set => It is recommended that each shard consists of a couple of servers, so if one instance fail in one shard, the the application can still run
+        - Shard Key => Used in the application and for the Mongo S to know to which server instance go
+            + Insert => Shard key must be specified
+            + Update, Remove, Find => If shard key is not specified, Mongo S, will have to broadcast the particular request to all the shards till it founds what it needs
+
+            
